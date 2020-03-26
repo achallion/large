@@ -2,6 +2,9 @@
 #define LARGE_HPP
 
 #include <iostream>
+#include <string>
+#include <algorithm>
+#include <math.h>
 
 using namespace std;
 
@@ -17,7 +20,9 @@ class large
     int last;   // how many digits does the last array member have
 
 public:
-    large(); // default constructor
+    large();       // default constructor
+    large(string); // argumented constructor
+    void print();
 };
 
 }; // namespace hlhl
