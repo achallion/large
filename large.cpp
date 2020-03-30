@@ -13,8 +13,40 @@ large::large()
     last = 0;
 }
 
-large::large(string str)
+large::large(string strint)
 {
+    string str;
+    positive = true;
+    if (strint[0] == '-' || strint[0] == '+')
+    {
+        if (strint[0] == '-')
+        {
+            positive = false;
+        }
+
+        for (int i = 1; i < strint.size(); i++)
+        {
+            if (strint[i] <= 48 && strint[i] >= 57)
+            {
+                cout << "Error : Number Must Be an Integer Value .";
+                return;
+            }
+            str[i - 1] = strint[i];
+        }
+    }
+    else
+    {
+        for (int i = 0; i < strint.size(); i++)
+        {
+            if (strint[i] <= 48 && strint[i] >= 57)
+            {
+                cout << "Error : Number Must Be an Integer Value .";
+                return;
+            }
+            str[i] = strint[i];
+        }
+    }
+
     int strl = str.size();
     size = ceil((float)strl / 18);
     number = new ll[size];
@@ -61,6 +93,10 @@ void large::print()
     {
         cout << number[i];
     }
+}
+
+large large::add(large second)
+{
 }
 
 }; // namespace hlhl
