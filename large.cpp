@@ -3,102 +3,69 @@
 
 #include "large.hpp"
 
-namespace hlhl
+namespace VAT
 {
 
-large::large()
-{
-    number = NULL;
-    size = 0;
-    last = 0;
-}
-
-large::large(string strint)
-{
-    string str;
-    positive = true;
-    if (strint[0] == '-' || strint[0] == '+')
+    large::large()
     {
-        if (strint[0] == '-')
+        number.push_back(0);
+        ldigits = 1;
+        positive = true;
+    }
+
+    large::large(string strint)
+    {
+        // check number is positive or negative
+        positive = true;
+        while (strint[0] == '-' || strint[0] == '+')
         {
-            positive = false;
+            if (strint[0] == '-')
+                positive = ~positive;
+
+            strint = strint.substr(1, strint.size() - 1); // remove + or - sign from 0th position
         }
 
-        for (int i = 1; i < strint.size(); i++)
+        // Calculate size of input string and vector size
+        int strlen = strint.size();
+        int vectsize = ceil((long double)strlen / blocksize);
+        number.resize(vectsize, 0);
+
+        // Fill the vector
+        int powof10 = 0;
+        int value = 1;
+
+        for (int i = 0; i < strlen; i++)
         {
-            if (strint[i] <= 48 && strint[i] >= 57)
-            {
-                cout << "Error : Number Must Be an Integer Value .";
+            int strindex = strlen - 1 - i;
+            int vectindex = i / blocksize;
+            char d = strint[strindex];
+            int intd = d - '0';
+            if (!isdigit(d))
                 return;
-            }
-            str[i - 1] = strint[i];
-        }
-    }
-    else
-    {
-        for (int i = 0; i < strint.size(); i++)
-        {
-            if (strint[i] <= 48 && strint[i] >= 57)
+
+            number[vectindex] = (long long)intd * value + number[vectindex];
+            if (powof10 == blocksize - 1)
             {
-                cout << "Error : Number Must Be an Integer Value .";
-                return;
+                powof10 = 0;
+                value = 1;
             }
-            str[i] = strint[i];
+            else
+            {
+                value *= 10;
+                powof10++;
+            }
         }
     }
 
-    int strl = str.size();
-    size = ceil((float)strl / 18);
-    number = new ll[size];
-    ll temp = 0;
-    int count = 0;
-    int containernum = size - 1;
-    int i = strl % 18;
-
-    if (i != 0) // copy first part of string
+    void large::print()
     {
-        for (int j = 0; j < i; j++)
+        cout << ((positive == false) ? "-" : "");
+        for (int i = number.size() - 1; i >= 0; i--)
         {
-            temp *= 10;
-            temp += str[j] - '0';
-        }
-        number[containernum--] = temp;
-    }
-
-    temp = 0;
-    for (; i < strl; i++) // Save remaining part of string
-    {
-        count++;
-        temp *= 10;
-        temp += str[i] - '0';
-
-        if (count == 18)
-        {
-            // saving temp
-            number[containernum--] = temp;
-            count = 0;
-            temp = 0;
+            cout << number[i];
         }
     }
 
-    if (count != 0 || temp != 0 || containernum != -1)
-    {
-        cout << "\nError : There Is An Error In The Constructor.";
-    }
-}
-
-void large::print()
-{
-    for (int i = size - 1; i >= 0; i--)
-    {
-        cout << number[i];
-    }
-}
-
-large large::add(large second)
-{
-}
-
-}; // namespace hlhl
+}; // namespace VAT
 
 #endif

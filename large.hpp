@@ -5,28 +5,31 @@
 #include <string>
 #include <algorithm>
 #include <math.h>
+#include <vector>
+#include <bitset>
 
 using namespace std;
 
-namespace hlhl
+int blocksize = 10;
+
+namespace VAT
 {
-typedef long long ll;
+    class large
+    {
+    public:
+        vector<long long> number; // array for storing number
+        int ldigits;              // how many digits does the last array member have
+        bitset<1> positive;       // Number is positive or not
 
-class large
-{
+        large();                      // default constructor
+        large(string);                // argumented constructor
+        void print();                 // print on console
+        large add(large second);      // add
+        large subtract(large second); // subtract
+        large multiply(large second); // multiply
+        large divide(large second);   // divide
+    };
 
-    ll *number;    // array for storing number
-    int size;      // size of array
-    int last;      // how many digits does the last array member have
-    bool positive; // Number is positive or not
-
-public:
-    large();       // default constructor
-    large(string); // argumented constructor
-    void print();
-    large add(large second);
-};
-
-}; // namespace hlhl
+}; // namespace VAT
 
 #endif
