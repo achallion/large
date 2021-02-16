@@ -3,8 +3,23 @@
 
 #include "large.hpp"
 
-namespace VAT
+namespace NAM
 {
+
+    long long pow(long long num, int p)
+    {
+        // base
+        if (p == 0)
+            return 1;
+        if (p == 1)
+            return num;
+
+        // rec
+        long long part = NAM::pow(num, (p >> 1));
+        if (p & 1)
+            return part * part * num;
+        return part * part;
+    }
 
     large::large()
     {
@@ -60,12 +75,119 @@ namespace VAT
     void large::print()
     {
         cout << ((positive == false) ? "-" : "");
-        for (int i = number.size() - 1; i >= 0; i--)
+        int size = number.size();
+        cout << number[size - 1];
+        for (int i = number.size() - 2; i >= 0; i--)
         {
-            cout << number[i];
+            long long part = number[i];
+            string str(blocksize, '0');
+            int j = blocksize - 1;
+            while (part > 0)
+            {
+                str[j] = (part % 10) + '0';
+                part /= 10;
+                j--;
+            }
+            cout << str;
         }
     }
 
-}; // namespace VAT
+    large large::unsignedadd(large second)
+    {
+        large temp;
+
+        // make container size same by adding 0 value blocks
+        int allsize = max(this->number.size(), second.number.size());
+        if (this->number.size() > second.number.size())
+            second.number.resize(allsize, 0);
+        else if (this->number.size() < second.number.size())
+            this->number.resize(allsize, 0);
+
+        temp.number.resize(allsize, 0);
+        bool carry = false;
+        long long threshhold = 5 * NAM::pow(10, blocksize - 1);
+
+        for (int i = 0; i < allsize; i++)
+        {
+            if (!this->number[i] && !second.number[i])
+            {
+                if (carry)
+                {
+                    temp.number[i] += carry;
+                    carry = false;
+                }
+                continue;
+            }
+
+            long long _first = this->number[i] - threshhold;
+            long long _second = second.number[i] - threshhold;
+            temp.number[i] = _first + _second + carry;
+            if (temp.number[i] < 0)
+            {
+                temp.number[i] += threshhold;
+                temp.number[i] += threshhold;
+                carry = false;
+            }
+            else
+                carry = true;
+        }
+        if (carry)
+            temp.number.push_back(1);
+        return temp;
+    }
+
+    large large::unsignedsubtract(large second)
+    {
+        large temp;
+
+        // create greater and smaller
+        large greaternum, smallernum;
+        if (*this > second)
+        {
+            greaternum = large(this);
+            smallernum = large(second);
+        }
+        else if (second > *this)
+        {
+            greaternum = large(second);
+            smallernum = large(*this);
+        }
+        else
+            return large();
+
+        // make container size same by adding 0 value blocks
+        int allsize = max(greaternum.number.size(), smallernum.number.size());
+        if (greaternum.number.size() > smallernum.number.size())
+            smallernum.number.resize(allsize, 0);
+
+        temp.number.resize(allsize, 0);
+        bool carry = false;
+        long long threshhold = 5 * NAM::pow(10, blocksize - 1);
+
+        for (int i = 0; i < allsize; i++)
+        {
+            if (!greaternum.number[i] && smallernum.number[i] == LARGE_MAX && carry)
+            {
+                temp.number[i] = threshhold - smallernum.number[i];
+                temp.number[i] += threshhold - carry;
+                continue;
+            }
+
+            smallernum.number[i] = ~smallernum.number[i] + 1;
+            temp.number[i] = greaternum.number[i] - smallernum.number[i] - carry;
+            if (temp.number[i] < 0)
+            {
+                temp.number[i] += threshhold;
+                temp.number[i] += threshhold;
+                carry = true;
+            }
+            else
+                carry = false;
+        }
+
+        return temp;
+    }
+
+}; // namespace NAM
 
 #endif
