@@ -18,6 +18,7 @@ const int LARGE_MAX = NAM::pow(10, blocksize) - 1;
 
 #include "largeheader.hpp"
 #include "largeheader.cpp"
-#include "largecompopover.cpp"
+#include "relational.cpp"
+#include "logical.cpp"
 
 #endif

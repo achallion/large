@@ -1,10 +1,16 @@
 namespace NAM
 {
 
+    bool large::isnull() const
+    {
+        if (number.size() <= 1 && number[0] == 0)
+            return true;
+        return false;
+    }
+
     large::large()
     {
         number.push_back(0);
-        ldigits = 1;
         positive = true;
     }
 
