@@ -3,15 +3,15 @@ namespace NAM
     class large
     {
     private:
-        large unsignedadd(large);      // add numbers as unsigned
-        large unsignedsubtract(large); // subtract numbers as unsigned
+        bool isnull() const;
+        void trim();                           // Remove 0 blocks from front
+        large unsignedadd(const large &);      // add numbers as unsigned
+        large unsignedsubtract(const large &); // subtract numbers as unsigned ( this being larger )
 
     public:
         vector<long long> number; // array for storing number
                                   //  int ldigits;              // how many digits does the last array member have
         bitset<1> positive;       // Number is positive or not
-
-        bool isnull() const;
 
         large();                       // default constructor
         large(string);                 // argumented constructor
@@ -20,11 +20,11 @@ namespace NAM
         large unsigneddivide(large);   // divide
 
         //*****Operators****
-        /* 
 
-        // Arithmatic 
-        bool operator+();
-        bool operator-();
+        // Arithmatic
+        large operator+(const large &);
+        large operator-(const large &);
+        /* 
         bool operator*();
         bool operator/();
         bool operator%();
@@ -71,5 +71,7 @@ namespace NAM
 
         */
     };
+
+    large modulus(const large &);
 
 }; // namespace NAM

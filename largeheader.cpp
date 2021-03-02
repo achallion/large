@@ -8,20 +8,83 @@ namespace NAM
         return false;
     }
 
+    void large::trim()
+    {
+        int i = number.size() - 1;
+        while (i > 0 && number[i] == 0)
+        {
+            i--;
+        }
+        number.resize(i + 1);
+        number.shrink_to_fit();
+    }
+
+    large large::unsignedadd(const large &second) // this is larger than second
+    {
+        large answer;
+
+        // make container size same by adding 0 value blocks
+        int maxsize = this->number.size();
+        int minsize = second.number.size();
+        answer.number.resize(maxsize, 0);
+        bool carry = false;
+
+        for (int i = 0; i < maxsize; i++)
+        {
+            answer.number[i] = this->number[i] + carry + (i < minsize ? second.number[i] : 0);
+            carry = false;
+
+            if (answer.number[i] > LARGE_MAX)
+            {
+                carry = true;
+                answer.number[i] -= (LARGE_MAX + 1);
+            }
+        }
+
+        if (carry)
+            answer.number.push_back(1);
+
+        answer.trim();
+        return answer;
+    }
+
+    large large::unsignedsubtract(const large &second) // this is larger than second
+    {
+        large answer;
+        int maxsize = this->number.size();
+        int minsize = second.number.size();
+        answer.number.resize(maxsize, 0);
+        bool carry = false;
+
+        for (int i = 0; i < maxsize; i++)
+        {
+            answer.number[i] = this->number[i] - (i < minsize ? second.number[i] : 0) - carry;
+            carry = false;
+            if (answer.number[i] < 0)
+            {
+                answer.number[i] += LARGE_MAX + 1;
+                carry = true;
+            }
+        }
+        answer.trim();
+        return answer;
+    }
+
     large::large()
     {
+        number.clear();
         number.push_back(0);
-        positive = true;
+        positive[0] = 1;
     }
 
     large::large(string strint)
     {
         // check number is positive or negative
-        positive = true;
+        positive[0] = 1;
         while (strint[0] == '-' || strint[0] == '+')
         {
             if (strint[0] == '-')
-                positive = ~positive;
+                positive[0] = ~positive[0];
 
             strint = strint.substr(1, strint.size() - 1); // remove + or - sign from 0th position
         }
@@ -60,7 +123,7 @@ namespace NAM
 
     void large::print()
     {
-        cout << ((positive == false) ? "-" : "");
+        cout << ((!this->positive[0]) ? "-" : "");
         int size = number.size();
         cout << number[size - 1];
         for (int i = number.size() - 2; i >= 0; i--)
@@ -78,100 +141,14 @@ namespace NAM
         }
     }
 
-    large large::unsignedadd(large second)
+    large modulus(const large &arg1)
     {
-        large temp;
-
-        // make container size same by adding 0 value blocks
-        int allsize = max(this->number.size(), second.number.size());
-        if (this->number.size() > second.number.size())
-            second.number.resize(allsize, 0);
-        else if (this->number.size() < second.number.size())
-            this->number.resize(allsize, 0);
-
-        temp.number.resize(allsize, 0);
-        bool carry = false;
-        long long threshhold = 5 * NAM::pow(10, blocksize - 1);
-
-        for (int i = 0; i < allsize; i++)
-        {
-            if (!this->number[i] && !second.number[i])
-            {
-                if (carry)
-                {
-                    temp.number[i] += carry;
-                    carry = false;
-                }
-                continue;
-            }
-
-            long long _first = this->number[i] - threshhold;
-            long long _second = second.number[i] - threshhold;
-            temp.number[i] = _first + _second + carry;
-            if (temp.number[i] < 0)
-            {
-                temp.number[i] += threshhold;
-                temp.number[i] += threshhold;
-                carry = false;
-            }
-            else
-                carry = true;
-        }
-        if (carry)
-            temp.number.push_back(1);
-        return temp;
+        if (arg1.positive[0])
+            return arg1;
+        // else
+        large negarg = arg1;
+        negarg.positive[0] = 1;
+        return negarg;
     }
-    /*
-    large large::unsignedsubtract(large second)
-    {
-        large temp;
 
-        // create greater and smaller
-        large greaternum, smallernum;
-        if (*this > second)
-        {
-            greaternum = large(this);
-            smallernum = large(second);
-        }
-        else if (second > *this)
-        {
-            greaternum = large(second);
-            smallernum = large(*this);
-        }
-        else
-            return large();
-
-        // make container size same by adding 0 value blocks
-        int allsize = max(greaternum.number.size(), smallernum.number.size());
-        if (greaternum.number.size() > smallernum.number.size())
-            smallernum.number.resize(allsize, 0);
-
-        temp.number.resize(allsize, 0);
-        bool carry = false;
-        long long threshhold = 5 * NAM::pow(10, blocksize - 1);
-
-        for (int i = 0; i < allsize; i++)
-        {
-            if (!greaternum.number[i] && smallernum.number[i] == LARGE_MAX && carry)
-            {
-                temp.number[i] = threshhold - smallernum.number[i];
-                temp.number[i] += threshhold - carry;
-                continue;
-            }
-
-            smallernum.number[i] = ~smallernum.number[i] + 1;
-            temp.number[i] = greaternum.number[i] - smallernum.number[i] - carry;
-            if (temp.number[i] < 0)
-            {
-                temp.number[i] += threshhold;
-                temp.number[i] += threshhold;
-                carry = true;
-            }
-            else
-                carry = false;
-        }
-
-        return temp;
-    }
-*/
 }; // namespace NAM
