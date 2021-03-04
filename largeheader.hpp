@@ -13,11 +13,16 @@ namespace NAM
                                   //  int ldigits;              // how many digits does the last array member have
         bitset<1> positive;       // Number is positive or not
 
-        large();                       // default constructor
-        large(string);                 // argumented constructor
         void print();                  // print on console
         large unsignedmultiply(large); // multiply
         large unsigneddivide(large);   // divide
+
+        // *****Constructor*****
+        large();       // default constructor
+        large(string); // argumented constructor
+        large(const large &); // copy constructor
+
+        // *****Destructor*******
 
         //*****Operators****
 
@@ -32,9 +37,10 @@ namespace NAM
         // Increment/Decrement
         bool operator++();
         bool operator--();
-        
+        */
         // Assignment
-        large operator=();
+        large operator=(const large &);
+        /*
         bool operator+=();
         bool operator-=();
         bool operator*=();

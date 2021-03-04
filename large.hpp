@@ -18,7 +18,9 @@ const int LARGE_MAX = NAM::pow(10, blocksize) - 1;
 
 #include "largeheader.hpp"
 #include "largeheader.cpp"
+#include "cons_decons/constructor.cpp"
 #include "operators/arithmetic.cpp"
+#include "operators/assignment.cpp"
 #include "operators/relational.cpp"
 #include "operators/logical.cpp"
 
