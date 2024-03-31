@@ -1,4 +1,4 @@
-namespace NAM
+namespace SV
 {
     class large
     {
@@ -80,4 +80,4 @@ namespace NAM
 
     large modulus(const large &);
 
-}; // namespace NAM
+}; // namespace SV

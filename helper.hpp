@@ -1,5 +1,5 @@
 
-namespace NAM
+namespace SV
 {
     long long pow(long long num, int p);
 
@@ -9,7 +9,7 @@ namespace NAM
 
 //**************
 
-long long NAM::pow(long long num, int p)
+long long SV::pow(long long num, int p)
 {
     // base
     if (p == 0)
@@ -18,7 +18,7 @@ long long NAM::pow(long long num, int p)
         return num;
 
     // rec
-    long long part = NAM::pow(num, (p >> 1));
+    long long part = SV::pow(num, (p >> 1));
     if (p & 1)
         return part * part * num;
     return part * part;

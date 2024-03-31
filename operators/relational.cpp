@@ -1,4 +1,4 @@
-namespace NAM
+namespace SV
 {
     bool large::operator==(const large &arg1) const
     {
@@ -163,4 +163,4 @@ namespace NAM
         return answer;
     }
 
-}; // namespace NAM
+}; // namespace SV
