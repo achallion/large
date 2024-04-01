@@ -3,11 +3,13 @@ namespace SV
 	class large
 	{
 	private:
-		vector<unsigned long long> number; // array for storing number
-		bitset<1> positive;				   // Number is positive or not
+		vector<ull> number; // array for storing number
+		bitset<1> positive; // Number is positive or not
 
-		bool isnull() const;
-		void trim(string &str);				   // Remove 0 from front of string
+		bool isnull() const;				   // Check if number is 0
+		void trim(string &);				   // Remove 0 from front of string
+		void stol(string);					   // String to large
+		bool isdigits(const string &);		   // check if string contain all digits
 		large unsignedadd(const large &);	   // add numbers as unsigned
 		large unsignedsubtract(const large &); // subtract numbers as unsigned ( this being larger )
 
@@ -39,7 +41,7 @@ namespace SV
 		bool operator--();
 		*/
 		// Assignment
-		large operator=(const large &);
+		// large operator=(const large &);
 		/*
 		bool operator+=();
 		bool operator-=();
@@ -62,22 +64,26 @@ namespace SV
 		bool operator&&(const large &) const;
 		bool operator||(const large &) const;
 		bool operator!() const;
-		/*
 
-		// Bitwise
-		bool operator&();
-		bool operator|();
-		bool operator~();
-		bool operator^();
-		bool operator>>();
-		bool operator<<();
+		// // Bitwise
+		// bool operator&();
+		// bool operator|();
+		// bool operator~();
+		// bool operator^();
+		// bool operator>>();
+		// bool operator<<();
 
-		// Miscellaneous
-		bool operator[]();
+		// Stream
+		friend ostream &operator<<(ostream &, const large &);
+		friend istream &operator>>(istream &, large &);
 
-		*/
+		// // Miscellaneous
+		// bool operator[]();
 	};
 
 	large modulus(const large &);
+
+	ostream &operator<<(ostream &, const large &);
+	istream &operator>>(istream &, large &);
 
 }; // namespace SV

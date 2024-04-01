@@ -1,3 +1,8 @@
+bool SV::large::isnull() const
+{
+	return (this->number.size() == 1 && this->number[0] == 0);
+}
+
 void SV::large::trim(string &str)
 {
 	int ct = 0;
@@ -7,6 +12,58 @@ void SV::large::trim(string &str)
 		else
 			break;
 	str = str.substr(ct, str.length() - ct);
+	if (!str.length())
+		str = "0";
+}
+
+void SV::large::stol(string strl)
+{
+	this->number.clear();
+
+	// if string is empty
+	if (!strl.size())
+	{
+		this->number.push_back(0);
+		this->positive[0] = 1;
+	}
+
+	// set the sign
+	this->positive[0] = strl[0] == '-' ? 0 : 1;
+
+	// seperate the number
+	if (strl[0] == '+' || strl[0] == '-')
+		strl = strl.substr(1, strl.size() - 1);
+
+	// Check for every character is a digit
+	if (!this->isdigits(strl))
+		return;
+
+	// trim the strl of 0
+	this->trim(strl);
+
+	// Resize the number array
+	this->number.resize(((strl.size() - 1) / BLOCK_SZ) + 1);
+
+	// Store string in number array
+	int ct = 0;
+	for (int i = strl.size() - 1; i >= 0; i -= BLOCK_SZ)
+	{
+		int ind = i - BLOCK_SZ + 1;
+		string str = ind < 0 ? strl.substr(0, BLOCK_SZ + ind) : strl.substr(ind, BLOCK_SZ);
+		this->number[ct++] = stoull(str);
+	}
+
+	// If number is 0 or -0 , set sign as positive
+	if (this->isnull())
+		this->positive[0] = 1;
+}
+
+bool SV::large::isdigits(const string &strl)
+{
+	for (const char &ch : strl)
+		if(ch < '0' || ch > '9')
+			return false;
+	return true;
 }
 
 // namespace SV
